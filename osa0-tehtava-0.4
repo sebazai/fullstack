@@ -1,0 +1,33 @@
+kayttaja->selain:
+note left of selain
+kayttaja kirjoittaa jotakin sivulla olevaan kenttään ja painaa Talleta
+end note
+
+selain->palvelin: POST fullstack-exampleapp.herokuapp.com/new_note
+palvelin->selain: status 302 FOUND
+note left of palvelin
+ Teksti mikä kentässä lähetetään palvelimella olevaan javascriptiin
+ tämä JS lisää JSON tiedoston perään kentässä olevalla
+ tiedolla ja aikaleimalla
+end note
+note left of palvelin
+ Palvelin kehottaa selainta tekemään uuden HTTP GET pyynnön headerin
+ Location kohtaa -> GET fullstack-exampleapp.herokuapp.com/notes
+end note
+selain->palvelin: GET -> fullstack-exampleapp.herokuapp.com/notes
+selain->palvelin: status 200, text/html; charset=UTF-8
+
+selain->palvelin: GET fullstack-exampleapp.herokuapp.com/main.css
+palvelin->selain: status 200, text/css; charset=UTF-8
+
+selain->palvelin: GET fullstack-exampleapp.herokuapp.com/main.js
+palvelin->selain: status 200, application/javascript
+
+selain->palvelin: GET fullstack-exampleapp.herokuapp.com/data.json
+palvelin->selain: status 200, application/json
+
+note left of selain
+ Javascript koodinpätkä lisäsi siis tekstikentässä olevan datan -> data.json
+ tiedostoon ja kun tuo palvelin kehottaa lataa uusiksi tämän
+ niin myös main.js ajetaan uudestaan ja data.json on päivittynyt
+end note

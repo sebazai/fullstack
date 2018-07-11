@@ -1,0 +1,27 @@
+kayttaja->selain:
+note left of selain
+kayttaja kirjoittaa web-selaimen osoiteriville:
+https://fullstack-exampleapp.herokuapp.com/notes
+end note
+selain->palvelin: GET fullstack-exampleapp.herokuapp.com/notes
+palvelin->selain: status 200, text/html; charset=UTF-8
+
+selain->palvelin: GET fullstack-exampleapp.herokuapp.com/main.css
+palvelin->selain: status 200, text/css; charset=UTF-8
+
+selain->palvelin: GET fullstack-exampleapp.herokuapp.com/main.js
+palvelin->selain: status 200, application/javascript
+
+selain->palvelin: GET fullstack-exampleapp.herokuapp.com/data.json
+palvelin->selain: status 200, application/json
+
+note left of selain
+ Javascript koodissa on event handler, joka suoritetaan kun:
+ - status code 200
+ - readyState 4 (eli status OK)
+ Käydään koodi läpi
+ Eli tehdään Un-ordered (UL) lista -> "NOTES" diviin
+ Jokaista JSON parsettua objektia kohtaan
+ tehdään list item (LI) ja tämä lisätään UL elementtiin
+ Selain näyttää tiedot käyttäjälle.
+end note
