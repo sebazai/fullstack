@@ -25,3 +25,5 @@ note left of selain
  tehdään list item (LI) ja tämä lisätään UL elementtiin
  Selain näyttää tiedot käyttäjälle.
 end note
+
+selain->kayttaja: Nayta palvelimen palauttama HTML

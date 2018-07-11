@@ -31,3 +31,5 @@ note left of selain
  tiedostoon ja kun tuo palvelin kehottaa lataa uusiksi tämän
  niin myös main.js ajetaan uudestaan ja data.json on päivittynyt
 end note
+
+selain->kayttaja: Nayta valmis HTML
