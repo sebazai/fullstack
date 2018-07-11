@@ -1,1 +1,2 @@
 # fullstack
+Kansioilla omat osat
