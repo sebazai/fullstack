@@ -6,18 +6,25 @@ end note
 selain->palvelin: GET fullstack-exampleapp.herokuapp.com/spa
 palvelin->selain: status 200, text/html; charset=utf-8
 
+note left of palvelin
+ HTML Koodissa CSS TAG ja Script tag, ladataan CSS ja js tiedosto
+end note
+
 selain->palvelin: GET fullstack-exampleapp.herokuapp.com/main.css
 palvelin->selain: status 200, text/css; charset=utf-8
 
 selain->palvelin: GET fullstack-exampleapp.herokuapp.com/spa.js
 palvelin->selain: status 200, application/javascript; charset=UTF-8
 
+note left of palvelin
+ Javascript suoritetaan, joka pyytää data.json tiedostoa
+ ja luo siitä bulletlistan (li)
+end note
+
 selain->palvelin: GET fullstack-exampleapp.herokuapp.com/data.json
 palvelin->selain: status 200, application/json; charset=utf-8
 
 note left of selain
- Selain pyytää palvelimelta datat (main.css, spa.js)
- ja ajaa scriptin läpi spa.js, joka pyytää data.json tiedostoa
  Kun selain on suorittanut kaiken, niin html sivu lähetetään kayttajalle
 end note
 

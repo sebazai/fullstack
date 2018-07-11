@@ -1,0 +1,16 @@
+kayttaja->selain:
+note left of selain
+kayttaja kirjoittaa jotakin sivulla olevaan kenttään ja painaa Talleta
+end note
+
+selain->palvelin: POST fullstack-exampleapp.herokuapp.com/new_note_spa
+palvelin->selain: status 201 CREATED
+note left of palvelin
+ Pyyntö kohdistuu new_note_spa, POST tyyppisenä ja se sisältää JSON-muodossa
+ olevan uuden muistiinpanon
+ Tässä new_note_spa on kerrottu, että palvelin ei lähetä selaimelle
+ pyyntö hakemaan uudestaan HTML vaan tieto päivittyy
+ selaimen lataamasta javascriptistä, joka kuuntelee muutoksia.
+end note
+
+selain->kayttaja: Nayta päivittynyt HTML

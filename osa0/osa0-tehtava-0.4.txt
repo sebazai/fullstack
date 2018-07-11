@@ -7,8 +7,8 @@ selain->palvelin: POST fullstack-exampleapp.herokuapp.com/new_note
 palvelin->selain: status 302 FOUND
 note left of palvelin
  Teksti mikä kentässä lähetetään palvelimella olevaan javascriptiin
- tämä JS lisää JSON tiedoston perään kentässä olevalla
- tiedolla ja aikaleimalla
+ tämä JS lisää JSON tiedoston perään kentässä olevan
+ tiedon ja aikaleimalla
 end note
 note left of palvelin
  Palvelin kehottaa selainta tekemään uuden HTTP GET pyynnön headerin
@@ -23,13 +23,17 @@ palvelin->selain: status 200, text/css; charset=UTF-8
 selain->palvelin: GET fullstack-exampleapp.herokuapp.com/main.js
 palvelin->selain: status 200, application/javascript
 
+note left of palvelin
+ Javascript suoritetaan, joka pyytää data.json tiedostoa
+ ja luo siitä bulletlistan (li)
+end note
+
 selain->palvelin: GET fullstack-exampleapp.herokuapp.com/data.json
 palvelin->selain: status 200, application/json
 
 note left of selain
- Javascript koodinpätkä lisäsi siis tekstikentässä olevan datan -> data.json
- tiedostoon ja kun tuo palvelin kehottaa lataa uusiksi tämän
- niin myös main.js ajetaan uudestaan ja data.json on päivittynyt
+ Javascript koodinpätkä latautui uudestaan ja kun data.json
+ päivitettiin käyttäjän syöttämällä datalla, niin se päivittyy sivulle
 end note
 
 selain->kayttaja: Nayta valmis HTML
