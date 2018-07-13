@@ -55,19 +55,21 @@ class App extends React.Component {
         return (
             <div>
                 <table>
-                <tr>
-                    <td>hyvä</td>
-                    <td>{this.state.hyva}</td>
-                </tr>
-                <tr>
-                    <td>neturaali</td>
-                    <td>{this.state.neutraali}</td>
-                </tr>
-                <tr>
-                    <td>huono</td>
-                    <td>{this.state.huono}</td>
-                </tr>
-                    {this.Statistic()}
+                    <tbody>
+                        <tr>
+                            <td>hyvä</td>
+                            <td>{this.state.hyva}</td>
+                        </tr>
+                        <tr>
+                            <td>neturaali</td>
+                            <td>{this.state.neutraali}</td>
+                        </tr>
+                        <tr>
+                            <td>huono</td>
+                            <td>{this.state.huono}</td>
+                        </tr>
+                            {this.Statistic()}
+                    </tbody>
                 </table>
             </div>
         )
