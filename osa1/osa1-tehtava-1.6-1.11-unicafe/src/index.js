@@ -61,7 +61,7 @@ class App extends React.Component {
                         <Statistic palaute="hyva" arvo={this.state.hyva} />
                         <Statistic palaute="neturaali" arvo={this.state.neutraali} />
                         <Statistic palaute="huono" arvo={this.state.huono} />
-                        <Statistic palaute="keskiarvo" arvo={(this.state.hyva-this.state.huono) / this.kaikkiYhteensa().toFixed(1)} />
+                        <Statistic palaute="keskiarvo" arvo={((this.state.hyva-this.state.huono) / this.kaikkiYhteensa()).toFixed(1)} />
                         <Statistic palaute="positiivisia" merkki="%" arvo={(this.state.hyva/this.kaikkiYhteensa()*100).toFixed(1)} /> 
                     </tbody>
                 </table>
