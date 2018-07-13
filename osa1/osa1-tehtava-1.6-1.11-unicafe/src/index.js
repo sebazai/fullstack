@@ -19,23 +19,9 @@ class App extends React.Component {
         }
     }
 
-    Statistic = () => {
-        const kaikki = this.state.hyva+this.state.neutraali+this.state.huono
-        const arvo = this.state.hyva-this.state.huono
-        let keskiarvo = (arvo / kaikki).toFixed(1)
-        const positiivi = (this.state.hyva/kaikki*100).toFixed(1)
-        return (
-            <tbody>
-            <tr>
-            <td>keskiarvo</td><td>{keskiarvo}</td>
-            </tr>
-            <tr>
-            <td>positiivisia</td><td>{positiivi} %</td>
-            </tr>
-            </tbody>
-        )
-    }
     
+    
+    kaikkiYhteensa = () => { return (this.state.hyva+this.state.neutraali+this.state.huono)}
     
     render() { 
     const Button = ({handleClick, text}) => (
@@ -43,6 +29,22 @@ class App extends React.Component {
             {text}
         </button>
     )
+
+    const Statistic = ({palaute, arvo, merkki}) => {
+        return (
+            <tr>
+                <td>
+                    {palaute}
+                </td>
+                <td>
+                    {arvo}
+                </td>
+                <td>
+                    {merkki}
+                </td>
+            </tr>
+        )
+    }
 
     const Statistics = () => {
         if (this.state.hyva === 0 && this.state.neutraali === 0 && this.state.huono === 0) {
@@ -56,19 +58,11 @@ class App extends React.Component {
             <div>
                 <table>
                     <tbody>
-                        <tr>
-                            <td>hyvä</td>
-                            <td>{this.state.hyva}</td>
-                        </tr>
-                        <tr>
-                            <td>neturaali</td>
-                            <td>{this.state.neutraali}</td>
-                        </tr>
-                        <tr>
-                            <td>huono</td>
-                            <td>{this.state.huono}</td>
-                        </tr>
-                            {this.Statistic()}
+                        <Statistic palaute="hyva" arvo={this.state.hyva} />
+                        <Statistic palaute="neturaali" arvo={this.state.neutraali} />
+                        <Statistic palaute="huono" arvo={this.state.huono} />
+                        <Statistic palaute="keskiarvo" arvo={(this.state.hyva-this.state.huono) / this.kaikkiYhteensa().toFixed(1)} />
+                        <Statistic palaute="positiivisia" merkki="%" arvo={(this.state.hyva/this.kaikkiYhteensa()*100).toFixed(1)} /> 
                     </tbody>
                 </table>
             </div>
