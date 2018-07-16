@@ -33,7 +33,7 @@ class App extends React.Component {
   render() {
     const FilteredCountriesAmount = ({countries}) => {
       console.log(countries.length)
-      if(countries.length < 10 && countries.length !== 0 && countries.length !== 1) {
+      if(countries.length < 10 && countries.length > 1) {
         return (
           countries.map(country => <Country funktio={this.changeFilter.bind(country.name)} key={country.name} name={country.name} />)
         )
@@ -42,6 +42,10 @@ class App extends React.Component {
         console.log(filteredCountries)
         return (
           <div><Country key={filteredCountries.name} name={filteredCountries.name} population={filteredCountries.population} flag={filteredCountries.flag} capital={filteredCountries.capital} /></div>
+        )
+      } else if (countries.length === 0) {
+        return (
+          <p>zero matches</p>
         )
       } else {
         return (
