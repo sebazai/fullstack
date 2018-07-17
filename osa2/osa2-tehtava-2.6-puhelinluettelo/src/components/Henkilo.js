@@ -1,8 +1,12 @@
 import React from 'react'
 
-const Henkilo = ({ person, number }) => {
+const Henkilo = ({ person, number, removeName }) => {
   return (
-    <div>{person} {number}<br /></div>
+    <tr>
+      <td>{person}</td>
+      <td>{number}</td>
+      <td><button type="submit" onClick={removeName}>poista</button></td>
+    </tr>
   )
 }
 

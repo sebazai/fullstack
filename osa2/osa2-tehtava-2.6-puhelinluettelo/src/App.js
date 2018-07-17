@@ -1,7 +1,8 @@
 import React from 'react';
 import Henkilo from './components/Henkilo'
 import NewHenkilo from './components/NewHenkilo'
-import axios from 'axios'
+import getPersons from './services/persons'
+
 
 class App extends React.Component {
   constructor(props) {
@@ -10,16 +11,22 @@ class App extends React.Component {
       persons: [ ],
       newName: '',
       newNumber: '',
-      filter: ''
+      filter: '',
+      message: null,
+      error: null
     }
   }
 
   componentDidMount() {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        this.setState({persons: response.data})
-      })
+    //axios
+      //.get('http://localhost:3001/persons')
+      //.then(response => {
+     //   this.setState({persons: response.data})
+      //})
+    getPersons
+      .getAll()
+      .then(response => 
+      this.setState({persons: response}))
   }
 
   handleNameChange = (event) => {
@@ -34,29 +41,126 @@ class App extends React.Component {
       this.setState({filter: event.target.value})
   }
 
+  removeName = (id, name) => {
+      return () => {
+        const result = window.confirm(`poistetaanko ${name}?`)
+        if (result) {
+          const url = `http://localhost:3001/persons/${id}`
+          getPersons
+          .removeid(url)
+          .then(response => {
+            const removedPerson = this.state.persons.filter(p => p.id !== id)
+            this.setState({
+              persons: removedPerson,
+              newName: '',
+              newNumber: '',
+              message: `poistettiin ${name}`
+            })
+            setTimeout(() => {
+              this.setState({message: null})
+            }, 5000)
+            console.log(removedPerson)
+            console.log(response)
+          })
+          .catch(error => {
+            console.log(error)
+            this.setState({
+              error: `Virhe: Tämä henkilö on jo poistettu, päivitä sivu`
+            })
+            setTimeout(() => {
+              this.setState({error: null})
+            }, 5000)
+          })
+        }
+      }
+  }
+
   addName = (event) => {
     event.preventDefault()
     if(this.state.persons.some((person) => person['name'] === this.state.newName)) {
-        alert('Nimi on jo listalla.')
+        const result = window.confirm(`${this.state.newName} on jo luettelossa, korvataanko vanha numero uudella?`)
+        if(result) {
+          const personToUpdate = this.state.persons.find(person => person.name === this.state.newName)
+          const allPersons = {...personToUpdate, number: this.state.newNumber}
+          console.log(personToUpdate)
+          getPersons
+            .update(personToUpdate.id, allPersons)
+            .then(allPersons => {
+              const persons = this.state.persons.filter(p => p.id !== personToUpdate.id)
+              this.setState({
+                  message: `Korvattiin ${this.state.newName} numero uudella numerolla`,
+                  persons: persons.concat(allPersons),
+              })
+              setTimeout(() => {
+                this.setState({
+                  message: null,
+                  newName: '',
+                  newNumber: ''
+                })
+              }, 5000)
+            })
+            .catch(error => {
+              console.log(error)
+              this.setState({
+                error: `Virhe: Tämä henkilö on jo poistettu, päivitä sivu`
+              })
+              setTimeout(() => {
+                this.setState({error: null})
+              }, 5000)
+            })
+          } else {
+            this.setState({message: `Ei korvattu ${this.state.newName} uudella numerolla`})
+            setTimeout(() => {
+              this.setState({message: null})
+            }, 5000)
+          }
     } else {
-        const newHenkilo = {
-            name: this.state.newName,
-            number: this.state.newNumber
-        }
-        const persons = this.state.persons.concat(newHenkilo)
-        this.setState({
-            persons: persons,
-            newName: '',
-            newNumber: ''
+      const newHenkilo = {
+          name: this.state.newName,
+          number: this.state.newNumber
+      }
+      getPersons
+        .create(newHenkilo)
+        .then(henkilo => {
+            this.setState({
+              persons: this.state.persons.concat(henkilo),
+              newName: '',
+              newNumber: '',
+              message: `lisättiin ${henkilo.name}`
+          })
+          setTimeout(() => {
+            this.setState({message: null})
+          }, 5000)
         })
     }
   }
 
+
+
   render() {
       const filteredPersons = this.state.persons.filter(person => person.name.toLowerCase().includes(this.state.filter.toLowerCase()))
+      const Notification = ({ message, error }) => {
+        if (message === null && error === null) {
+          return null
+        } else if (message !== null) {
+          return (
+            <div className="message">
+              {message}
+            </div>
+          )
+        } else if (error !== null) {
+          return (
+            <div className="error">
+              {error}
+            </div>
+          )
+        }
+      }
+
     return (
       <div>
         <h2>Puhelinluettelo</h2>
+        <Notification error={this.state.error} message={this.state.message} />
             <div>
                 rajaa näytettäviä: <input 
                     onChange={this.handleFilteredChange} />
@@ -69,7 +173,15 @@ class App extends React.Component {
             nameChange={this.handleNameChange} 
             phoneChange={this.handleNumberChange} />
         <h3>Numerot</h3>
-        {filteredPersons.map(person => <Henkilo key={person.name} person={person.name} number={person.number} />)}
+        <table>
+          <tbody>
+            {filteredPersons.map(person => 
+              <Henkilo removeName={this.removeName(person.id, person.name)}  
+                key={person.name} 
+                person={person.name} 
+                number={person.number} />)}
+          </tbody>
+        </table>
       </div>
     )
   }
