@@ -10,13 +10,97 @@
       "id": 2,
       "content": "Selain pystyy suorittamaan vain javascriptiä",
       "date": "2017-12-10T18:39:34.091Z",
-      "important": false
+      "important": true
     },
     {
       "id": 3,
       "content": "HTTP-protokollan tärkeimmät metodit ovat GET ja POST",
       "date": "2017-12-10T19:20:14.298Z",
       "important": true
+    },
+    {
+      "content": "uusi muistiinpano...",
+      "date": "2018-07-17T09:26:40.177Z",
+      "important": true,
+      "id": 4
+    },
+    {
+      "content": "uusi muistiinpano...",
+      "date": "2018-07-17T09:27:21.239Z",
+      "important": true,
+      "id": 5
+    },
+    {
+      "content": "uusi muistiinpano.asdasd..",
+      "date": "2018-07-17T09:28:22.893Z",
+      "important": false,
+      "id": 6
+    },
+    {
+      "content": "Titta",
+      "date": "2018-07-17T09:29:18.394Z",
+      "important": false,
+      "id": 7
+    },
+    {
+      "content": "uusi muistiinpano...ASdasd",
+      "date": "2018-07-17T09:30:30.839Z",
+      "important": true,
+      "id": 8
+    },
+    {
+      "content": "uusi muistiinpano...",
+      "date": "2018-07-17T09:39:01.886Z",
+      "important": true,
+      "id": 9
+    },
+    {
+      "content": "",
+      "date": "2018-07-17T09:39:15.646Z",
+      "important": true,
+      "id": 10
+    },
+    {
+      "content": "",
+      "date": "2018-07-17T09:39:16.070Z",
+      "important": true,
+      "id": 11
+    },
+    {
+      "content": "",
+      "date": "2018-07-17T09:39:20.190Z",
+      "important": true,
+      "id": 12
+    },
+    {
+      "content": "asdfasdfasdf",
+      "date": "2018-07-17T10:06:23.837Z",
+      "important": true,
+      "id": 13
+    },
+    {
+      "content": "sfasfasf",
+      "date": "2018-07-17T10:08:01.123Z",
+      "important": true,
+      "id": 14
+    },
+    {
+      "content": "xzc",
+      "date": "2018-07-17T10:08:14.946Z",
+      "important": true,
+      "id": 15
+    },
+    {
+      "content": "uusi muistiinpano...",
+      "date": "2018-07-17T10:22:01.582Z",
+      "important": false,
+      "id": 16
+    },
+    {
+      "content": "sfasfasf",
+      "date": "2018-07-17T10:23:49.372Z",
+      "important": true,
+      "id": 18
     }
   ]
 }
