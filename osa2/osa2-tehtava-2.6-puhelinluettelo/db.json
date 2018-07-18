@@ -1,3 +1,34 @@
 {
-  "persons": []
+  "persons": [
+    {
+      "name": "Tapio Piirainen",
+      "number": "080 456 7894",
+      "id": 2
+    },
+    {
+      "name": "NumeroKenttaEiTyhjene",
+      "number": "050 654 1234",
+      "id": 3
+    },
+    {
+      "name": "Vaikka REACT tools state tyhja",
+      "number": "",
+      "id": 5
+    },
+    {
+      "name": "No entiendo.",
+      "number": "050 456 7896",
+      "id": 6
+    },
+    {
+      "name": "Aleksi Mustonen",
+      "number": "050 336 0234",
+      "id": 7
+    },
+    {
+      "name": "Sauli Niinistö",
+      "number": "0700 126 457",
+      "id": 8
+    }
+  ]
 }

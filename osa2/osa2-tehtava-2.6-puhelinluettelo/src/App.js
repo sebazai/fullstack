@@ -18,11 +18,6 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    //axios
-      //.get('http://localhost:3001/persons')
-      //.then(response => {
-     //   this.setState({persons: response.data})
-      //})
     getPersons
       .getAll()
       .then(response => 
@@ -39,6 +34,27 @@ class App extends React.Component {
 
   handleFilteredChange = (event) => {
       this.setState({filter: event.target.value})
+  }
+
+  addPersonBack = (id, number) => {
+    const newHenkilo = {
+      name: this.state.persons.filter(p => p.id === id).map(h => h.name).toString(),
+      number: number === undefined ? this.state.persons.filter(p => p.id === id).map(h => h.number).toString() : number
+    }
+    console.log(newHenkilo)
+    getPersons
+    .create(newHenkilo)
+    .then(henkilo => {
+      this.setState({
+        message: `lisättiin ${henkilo.name} takaisin, numerolla ${henkilo.number}`,
+        newNumber: '',
+        newName: ''
+    })
+    this.componentDidMount()
+      setTimeout(() => {
+        this.setState({message: null})
+      }, 5000)
+    })
   }
 
   removeName = (id, name) => {
@@ -65,10 +81,11 @@ class App extends React.Component {
           .catch(error => {
             console.log(error)
             this.setState({
-              error: `Virhe: Tämä henkilö on jo poistettu, päivitä sivu`
+              error: `Virhe: Tämä henkilö on poistettu`
             })
             setTimeout(() => {
               this.setState({error: null})
+              const response = window.confirm(`Lisätäänkö henkilö takaisin?`) ? this.addPersonBack(id) : this.componentDidMount()
             }, 5000)
           })
         }
@@ -77,10 +94,10 @@ class App extends React.Component {
 
   addName = (event) => {
     event.preventDefault()
-    if(this.state.persons.some((person) => person['name'] === this.state.newName)) {
+    if(this.state.persons.some((person) => person['name'].toLowerCase() === this.state.newName.toLowerCase())) {
         const result = window.confirm(`${this.state.newName} on jo luettelossa, korvataanko vanha numero uudella?`)
         if(result) {
-          const personToUpdate = this.state.persons.find(person => person.name === this.state.newName)
+          const personToUpdate = this.state.persons.find(person => person.name.toLowerCase() === this.state.newName.toLowerCase())
           const allPersons = {...personToUpdate, number: this.state.newNumber}
           console.log(personToUpdate)
           getPersons
@@ -88,24 +105,27 @@ class App extends React.Component {
             .then(allPersons => {
               const persons = this.state.persons.filter(p => p.id !== personToUpdate.id)
               this.setState({
-                  message: `Korvattiin ${this.state.newName} numero uudella numerolla`,
+                  message: `Korvattiin henkilön ${this.state.newName} numero uudella numerolla`,
                   persons: persons.concat(allPersons),
+                  newName: '',
+                  newNumber: ''
               })
               setTimeout(() => {
                 this.setState({
-                  message: null,
-                  newName: '',
-                  newNumber: ''
+                  message: null
                 })
               }, 5000)
             })
             .catch(error => {
               console.log(error)
               this.setState({
-                error: `Virhe: Tämä henkilö on jo poistettu, päivitä sivu`
+                error: `Virhe: Tämä henkilö on poistettu`
               })
               setTimeout(() => {
                 this.setState({error: null})
+                const response = window.confirm(`Lisätäänkö henkilö takaisin?`) ? 
+                    this.addPersonBack(personToUpdate.id, this.state.newNumber) :
+                    this.componentDidMount()
               }, 5000)
             })
           } else {
