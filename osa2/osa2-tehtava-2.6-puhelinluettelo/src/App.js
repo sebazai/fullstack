@@ -61,9 +61,9 @@ class App extends React.Component {
       return () => {
         const result = window.confirm(`poistetaanko ${name}?`)
         if (result) {
-          const url = `http://localhost:3001/persons/${id}`
+          //const url = `http://localhost:3001/persons/${id}`
           getPersons
-          .removeid(url)
+          .removeid(id)
           .then(response => {
             const removedPerson = this.state.persons.filter(p => p.id !== id)
             this.setState({
