@@ -48,7 +48,6 @@ const dummy = (blogs) => {
     const individuelAuthors = [...new Set(blogs.map(blog => blog.author))]
     const myMap = new Map()
     //console.log(individuelAuthors)
-    
     individuelAuthors.forEach((author) => {
       myMap.set(author, 0)
       blogs.forEach((value) => {
@@ -60,7 +59,6 @@ const dummy = (blogs) => {
     const bestAuthor = getbestAuthor(myMap, individuelAuthors)
     //console.log(bestAuthor)
     return blogPost(bestAuthor, myMap.get(bestAuthor))
-
   }
 
   // most likes
@@ -74,7 +72,6 @@ const dummy = (blogs) => {
     const individuelAuthors = [...new Set(blogs.map(blog => blog.author))]
     const myMap = new Map()
     //console.log(individuelAuthors)
-    
     individuelAuthors.forEach((author) => {
       myMap.set(author, 0)
       blogs.forEach((value) => {
@@ -83,9 +80,7 @@ const dummy = (blogs) => {
         }
       })
     })
-
     const bestAuthor = getbestAuthor(myMap, individuelAuthors)
-    
     //console.log(blogPost(bestAuthor, myMap.get(bestAuthor)))
     return blogPost(bestAuthor, myMap.get(bestAuthor))
   }

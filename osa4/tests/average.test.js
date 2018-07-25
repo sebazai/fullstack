@@ -6,17 +6,12 @@ describe('average', () => {
     expect(average([1])).toBe(1)
   })
 
-  test('of many is calculated right', () => {
+  test('of many is caclulated right', () => {
     expect(average([1, 2, 3, 4, 5, 6])).toBe(3.5)
   })
 
   test('of empty array is zero', () => {
-    const average = (array) => {
-        const reducer = (sum, item) => {
-          return sum + item
-        }
-        return array.length === 0 ? 0 : array.reduce(reducer, 0) / array.length
-      }
+    expect(average([])).toBe(0)
   })
 
 })
