@@ -60,12 +60,12 @@ describe('dummy', () => {
 
 
 describe('total likes', () => {
-  test('when list is empty, expect to be 0', () => {
+  test('when list is empty, expected to be 0', () => {
     const emptyBlog = []
     const result = listHelper.totalLikes(emptyBlog)
     expect(result).toBe(0)
   })
-  test('ready blog data, expected to be 36 likes', () => {
+  test('of ready blog data, expected to be 36 likes', () => {
     const result = listHelper.totalLikes(blogs)
     expect(result).toBe(36)
   })
@@ -85,7 +85,7 @@ describe('favorite blogpost', () => {
 })
 
 describe('most blogposts', () => {
-  test('the author with most blog posts', () => {
+  test('by author name and amount', () => {
     const result = listHelper.mostBlogs(blogs)
     expect(result).toEqual(
       {
@@ -97,7 +97,7 @@ describe('most blogposts', () => {
 })
 
 describe('most likes', () => {
-  test('the author with most likes on blog posts', () => {
+  test('on blog posts of author', () => {
     const result = listHelper.mostLikes(blogs)
     expect(result).toEqual(
       {
