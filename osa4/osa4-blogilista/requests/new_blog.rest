@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs
+content-type: application/json
+
+{
+  "title": "VS Coden REST client on paras keksintö sitten viipaloidun leivän",
+  "author": "Joku tyyppi vaan",
+  "url": "localhost",
+  "likes": 9001
+}
