@@ -4,6 +4,7 @@ module.exports = {
         "node": true,
         "jest": true
     },
+    "parser": "babel-eslint",
     "extends": "eslint:recommended",
     "rules": {
         "indent": [
@@ -12,7 +13,7 @@ module.exports = {
         ],
         "linebreak-style": [
             "error",
-            "unix"
+            "windows"
         ],
         "quotes": [
             "error",
@@ -31,5 +32,8 @@ module.exports = {
             "error", { "before": true, "after": true }
         ],
         "no-console": 0
+    },
+    "parserOptions": {
+        "ecmaVersion" : 2018
     }
 };
