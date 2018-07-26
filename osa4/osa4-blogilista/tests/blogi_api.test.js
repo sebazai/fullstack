@@ -2,135 +2,184 @@ const supertest = require('supertest')
 const { app, server } = require('../index')
 const api = supertest(app)
 const Blog = require('../models/blog')
+const helper = require('./test_helper')
 
-const initialPosts = [
-  {
-    _id: '5a422a851b54a676234d17f7',
-    title: 'React patterns',
-    author: 'Michael Chan',
-    url: 'https://reactpatterns.com/',
-    likes: 7,
-    __v: 0
-  },
-  {
-    _id: '5a422aa71b54a676234d17f8',
-    title: 'Go To Statement Considered Harmful',
-    author: 'Edsger W. Dijkstra',
-    url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-    likes: 5,
-    __v: 0
-  },
-  {
-    _id: '5a422b3a1b54a676234d17f9',
-    title: 'Canonical string reduction',
-    author: 'Edsger W. Dijkstra',
-    url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
-    likes: 12,
-    __v: 0
-  },
-  {
-    _id: '5a422b891b54a676234d17fa',
-    title: 'First class tests',
-    author: 'Robert C. Martin',
-    url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
-    likes: 10,
-    __v: 0
-  },
-  {
-    _id: '5a422ba71b54a676234d17fb',
-    title: 'TDD harms architecture',
-    author: 'Robert C. Martin',
-    url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
-    likes: 0,
-    __v: 0
-  },
-  {
-    _id: '5a422bc61b54a676234d17fc',
-    title: 'Type wars',
-    author: 'Robert C. Martin',
-    url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
-    likes: 2,
-    __v: 0
-  }
-]
 
-beforeAll(async () => {
-  await Blog.remove({})
-  const blogPosts = initialPosts.map(post => new Blog(post))
-  const promiseArray = blogPosts.map(post => post.save())
-  await Promise.all(promiseArray)
-})
+describe('blog post testing', async () => {
+  beforeAll(async () => {
+    await Blog.remove({})
+    const blogPosts = helper.initialPosts.map(post => new Blog(post))
+    const promiseArray = blogPosts.map(post => post.save())
+    await Promise.all(promiseArray)
+  })
 
-test('blogs are returned as json', async () => {
-  await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
-})
+  test('blogs are returned as json', async () => {
+    const postsInDb = await helper.postsInDb()
 
-test('blogpost amount is 6', async () => {
-  await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
+    const response = await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
 
-  const testData = await api
-    .get('/api/blogs')
+    expect(response.body.length).toBe(postsInDb.length)
+    const returnedTitles = response.body.map(p => p.title)
+    postsInDb.forEach(post => {
+      expect(returnedTitles).toContain(post.title)
+    })
+  })
 
-  expect(testData.body.length).toBe(6)
-})
+  test('individual blogpost is return as json via GET /api/blogs/:id', async () => {
+    const postsInDb = await helper.postsInDb()
+    const firstPost = postsInDb[0]
 
-test('add a blog post with all the necessary information', async () => {
-  const newPost = {
-    title: 'this is a test blog post',
-    author: 'Sebastian S',
-    url: 'localhost/api/blogs/postsebu',
-    likes: 3
-  }
+    const response = await api
+      .get(`/api/blogs/${firstPost.id}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
 
-  await api
-    .post('/api/blogs')
-    .send(newPost)
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
+    expect(response.body.title).toBe(firstPost.title)
+  })
 
-  const response = await api
-    .get('/api/blogs')
-    //console.log(response.body)
-  expect(response.body[response.body.length-1].title).toContain('this is a test blog post')
-  expect(response.body.length).toBe(initialPosts.length +1)
-})
+  test('blogpost amount is 6', async () => {
+    
+    await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
 
-test('add a blog post missing url and title', async () => {
-  const fakePost = {
-    author: 'Mika häkkinen',
-    likes: 2
-  }
+    const testData = await api
+      .get('/api/blogs')
 
-  await api
-    .post('/api/blogs')
-    .send(fakePost)
-    .expect(400)
-})
+    expect(testData.body.length).toBe(6)
+  })
 
-test('add a blog post without likes and see if it is 0', async () => {
-  const newPost = {
-    title: 'this is a new post without likes',
-    author: 'Dalai',
-    url: 'is here'
-  }
+  test('404 returned by GET /api/blogs/:id with nonexisting valid id', async () => {
+    const nonExistingId = await helper.nonExistingID()
 
-  await api
-    .post('/api/blogs')
-    .send(newPost)
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
+    const response = await api
+      .get(`/api/blogs/${nonExistingId}`)
+      .expect(404)
+  })
 
-  const response = await api
-    .get('/api/blogs')
+  test('400 is returned by GET /api/blogs/:id with invalid id', async () => {
+    const invalidId = "5a3d5da59070081a82a3445"
 
-  expect(response.body[response.body.length-1].likes).toBe(0)
+    const response = await api
+      .get(`/api/blogs/${invalidId}`)
+      .expect(400)
+  })
 
+  describe('adding of a new blog post', async () => {
+    test('add a blog post with all the necessary information', async () => {
+      const postsAtStart = await helper.postsInDb()
+
+      const newPost = {
+        title: 'this is a test blog post',
+        author: 'Sebastian S',
+        url: 'localhost/api/blogs/postsebu',
+        likes: 3
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newPost)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+      const postsAfterAdding = await helper.postsInDb()
+        //console.log(response.body)
+      expect(postsAfterAdding[postsAfterAdding.length-1].title).toContain('this is a test blog post')
+      expect(postsAfterAdding.length).toBe(postsAtStart.length +1)
+    })
+  })
+  describe('add posts without all the necessary information', async () => {
+    test('add a blog post missing url and title', async () => {
+      const fakePost = {
+        author: 'Mika häkkinen',
+        likes: 2
+      }
+
+      const postsAtStart = await helper.postsInDb()
+
+      await api
+        .post('/api/blogs')
+        .send(fakePost)
+        .expect(400)
+
+      const postsAfterAdding = await helper.postsInDb()
+      expect(postsAfterAdding.length).toBe(postsAtStart.length)
+    })
+
+    test('add a blog post without likes and see if it is 0', async () => {
+      const newPost = {
+        title: 'this is a new post without likes',
+        author: 'Dalai',
+        url: 'is here'
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newPost)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+      const response = await api
+        .get('/api/blogs')
+
+      expect(response.body[response.body.length-1].likes).toBe(0)
+
+    })
+  })
+  describe('deletion of posts', async () => {
+    let addedPost
+    beforeAll(async () => {
+      addedPost = new Blog({
+        title: 'this is testing api deletion',
+        author: 'Sebastian S',
+        url: 'localhost/api/blogs/post',
+        likes: 7
+      })
+      await addedPost.save()
+    })
+
+    test('DELETE /api/blogs/:id succeeds with proper statuscode', async () => {
+      const postsAtStart = await helper.postsInDb()
+
+      await api
+        .delete(`/api/blogs/${addedPost._id}`)
+        .expect(204)
+
+        const afterDeletion = await helper.postsInDb()
+
+        const titles = afterDeletion.map(p => p.title)
+        expect(titles).not.toContain(addedPost.title)
+        expect(afterDeletion.length).toBe(postsAtStart.length-1)
+    })
+  })
+
+  describe('updating likes on post', async () =>{
+    test('Change the first posts like from 7 to 9', async () => {
+      const postWithNewLikes = {
+        id: '5a422a851b54a676234d17f7',
+        title: 'React patterns',
+        author: 'Michael Chan',
+        url: 'https://reactpatterns.com/',
+        likes: 9,
+        __v: 0
+      }
+      const postsBeforeAdding = await helper.postsInDb()
+  
+      await api
+        .put(`/api/blogs/${postWithNewLikes.id}`)
+        .send(postWithNewLikes)
+        .expect(200)
+
+      const afterAdding = await helper.postsInDb()
+      
+      expect(postsBeforeAdding.length).toBe(afterAdding.length)
+      expect(afterAdding[0].likes).toBe(9)
+    })
+  })
 })
 
 afterAll(() => {
