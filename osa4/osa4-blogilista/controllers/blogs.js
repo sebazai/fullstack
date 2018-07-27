@@ -6,18 +6,18 @@ const jwt = require('jsonwebtoken')
 
 
 blogsRouter.get('/', async (request, response) => {
-  const posts = await Blog.find({}).populate('user', {id: 1, username: 1, name: 1} )
+  const posts = await Blog.find({}).populate('user', { id: 1, username: 1, name: 1 } )
   response.json(posts)
 })
 
 blogsRouter.post('/', async (request, response) => {
   const body = request.body
   try {
-    
+
     const decodedToken = jwt.verify(request.token, process.env.SECRET)
 
     if(!request.token || !decodedToken.id) {
-      return response.status(401).json({error: 'token missing or invalid'})
+      return response.status(401).json({ error: 'token missing or invalid' })
     }
 
     if(body.title === undefined && body.url === undefined ) {
@@ -41,7 +41,7 @@ blogsRouter.post('/', async (request, response) => {
     response.json(Blog.format(blogpost))
   } catch (exception) {
     if (exception.name === 'JsonWebTokenError') {
-      response.status(401).json({error: exception.message})
+      response.status(401).json({ error: exception.message })
     } else {
       //console.log(exception)
       response.status(500).json({ error: 'something went wrong...' })
@@ -69,9 +69,9 @@ blogsRouter.get('/:id', async (request, response) => {
 blogsRouter.delete('/:id', async (request, response) => {
   try {
     const decodedToken = jwt.verify(request.token, process.env.SECRET)
-    
+
     if(!request.token || !decodedToken.id) {
-      return response.status(401).json({error: 'token missing or invalid'})
+      return response.status(401).json({ error: 'token missing or invalid' })
     }
 
     const blog = await Blog.findById(request.params.id)
@@ -79,18 +79,19 @@ blogsRouter.delete('/:id', async (request, response) => {
 
     if (blog.user.toString() === user.id.toString()) {
       const post = await Blog.findByIdAndRemove(request.params.id)
+      console.log(post)
       response.status(204).end()
     } else {
-      response.status(401).json({error: 'token invalid'})
+      response.status(401).json({ error: 'token invalid' })
     }
-  
-    
+
+
   } catch (exception) {
     if (exception.name === 'JsonWebTokenError') {
-      response.status(401).json({error: exception.message})
+      response.status(401).json({ error: exception.message })
     } else {
       console.log(exception)
-      response.status(400).send({error: 'cannot find id'})
+      response.status(400).send({ error: 'cannot find id' })
     }
   }
 })
@@ -105,11 +106,11 @@ blogsRouter.put('/:id', async (request, response) => {
       url: body.url,
       likes: body.likes
     }
-    const updatedpost = await Blog.findByIdAndUpdate(request.params.id,updatedBlogPost, { new: true})
+    const updatedpost = await Blog.findByIdAndUpdate(request.params.id,updatedBlogPost, { new: true })
     response.json(Blog.format(updatedpost))
   } catch (exception) {
     //console.log(exception)
-    response.status(400).send({error: 'malformatted id'})
+    response.status(400).send({ error: 'malformatted id' })
   }
 
 })
