@@ -1,9 +1,10 @@
-POST http://localhost:3003/api/blogs
+POST http://localhost:3001/api/blogs
 content-type: application/json
-
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNlYnUiLCJpZCI6IjViNWFiZmRiOTE1YTlhZTZiYzkwNjM1NiIsImlhdCI6MTUzMjY3OTcyNn0.3KkBRNIrRJOQYVz5ZDX96U91BLbXVf4TFi5DE_54y0Q
 {
-  "title": "VS Coden REST client on paras keksintö sitten viipaloidun leivän",
-  "author": "Joku tyyppi vaan",
+  "title": "Token autentikointi2 - middleware",
+  "author": "Joku tyyppi vaan2",
   "url": "localhost",
-  "likes": 9001
+  "likes": 9000,
+  "userId": "5b5abfdb915a9ae6bc906356"
 }
