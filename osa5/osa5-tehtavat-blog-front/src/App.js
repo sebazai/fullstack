@@ -4,6 +4,8 @@ import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
+import UserInfo from './components/UserInfo'
+import LoginForm from './components/LoginForm'
 
 class App extends React.Component {
   constructor(props) {
@@ -17,8 +19,7 @@ class App extends React.Component {
       user: null,
       title: '',
       author: '',
-      url: '',
-      newBlog: ''
+      url: ''
     }
   }
 
@@ -47,7 +48,6 @@ class App extends React.Component {
       .then(newBlog => {
         this.setState({
           blogs: this.state.blogs.concat(newBlog),
-          newBlog: '',
           title: '',
           author: '',
           url: '',
@@ -90,6 +90,8 @@ class App extends React.Component {
     }
   }
 
+
+
   handleLoginFieldChange = (event) => {
     this.setState({ [event.target.name]: event.target.value })
   }
@@ -98,31 +100,14 @@ class App extends React.Component {
 
     if (this.state.user === null) {
       return (
-        <div>
-          <h2>Kirjaudu sovellukseen</h2>
-          <Notification message={this.state.error} success={this.state.success} />
-          <form onSubmit={this.login}>
-          <div>
-            käyttäjätunnus
-            <input
-              type="text"
-              name="username"
-              value={this.state.username}
-              onChange={this.handleLoginFieldChange}
-            />
-          </div>
-          <div>
-            salasana
-            <input
-              type="password"
-              name="password"
-              value={this.state.password}
-              onChange={this.handleLoginFieldChange}
-            />
-          </div>
-          <button>kirjaudu</button>
-        </form>
-        </div>
+        <LoginForm 
+          handleLoginFieldChange={this.handleLoginFieldChange} 
+          username={this.state.username}
+          password={this.state.password}
+          error={this.state.error}
+          success={this.state.success}
+          login={this.login}
+        />
       )
     }
   
@@ -130,12 +115,9 @@ class App extends React.Component {
       <div>
         <h2>Blogs</h2>
         <Notification message={this.state.error} success={this.state.success} />
-        <p>{this.state.user.name} is logged in <button type="button" onClick={this.logout}>logout</button></p>
-        <BlogForm title={this.state.title} author={this.state.author} url={this.state.url} addBlog={this.addBlog} handleBlogChange={this.handleBlogChange} />
-        <br />
-        {this.state.blogs.map(blog =>
-          <Blog key={blog._id} blog={blog} />
-        )}
+        <UserInfo logout={this.logout} user={this.state.user} />
+        <BlogForm title={this.state.title} author={this.state.author} url={this.state.url} addBlog={this.addBlog} handleBlogChange={this.handleBlogChange} /><br />
+        {this.state.blogs.map(blog => <Blog key={blog._id} blog={blog} />)}
       </div>
     )
   }
