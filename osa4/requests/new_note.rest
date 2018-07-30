@@ -2,6 +2,7 @@ POST http://localhost:3001/api/notes
 content-type: application/json
 
 {
-  "content": "VS Coden REST client on paras keksintö sitten viipaloidun leivän",
-  "important": true
+  "content": "Token-autentikaatio ei ole vielä valmis",
+  "important": true,
+  "userId": "5a6741dcfcf9433f18ee88a0"
 }
