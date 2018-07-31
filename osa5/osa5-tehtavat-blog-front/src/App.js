@@ -6,6 +6,8 @@ import loginService from './services/login'
 import Notification from './components/Notification'
 import UserInfo from './components/UserInfo'
 import LoginForm from './components/LoginForm'
+import Togglable from './components/Togglable'
+import TogglableBlog from './components/TogglableBlog';
 
 class App extends React.Component {
   constructor(props) {
@@ -19,15 +21,18 @@ class App extends React.Component {
       user: null,
       title: '',
       author: '',
-      url: ''
+      url: '',
+      loginVisible: ''
     }
   }
 
-  componentDidMount() {
-    blogService.getAll().then(blogs =>
+  componentDidMount = async () => {
+    const blogs = await blogService.getAll()
+    this.setState({blogs})
+    /*blogService.getAll().then(blogs =>
       this.setState({ blogs })
-    )
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
+    )*/
+    const loggedUserJSON = await window.localStorage.getItem('loggedBlogUser')
       if (loggedUserJSON) {
         const user = JSON.parse(loggedUserJSON)
         this.setState({user})
@@ -43,6 +48,21 @@ class App extends React.Component {
       url: this.state.url
     }
 
+    const newBlog = await blogService.create(blogPost)
+    //console.log(newBlog.id)
+    this.setState({
+      blogs: this.state.blogs.concat(newBlog),
+      title: '',
+      author: '',
+      url: '',
+      success: `a new blog '${newBlog.title}' by ${newBlog.author} added`
+    })
+    setTimeout(()=>{
+      this.setState({success: null})
+      this.componentDidMount()
+    }, 5000)
+    
+    /*
     blogService
       .create(blogPost)
       .then(newBlog => {
@@ -56,7 +76,7 @@ class App extends React.Component {
         setTimeout(() => {
           this.setState({ success: null })
         }, 5000)
-      })
+      })*/
   
   }
 
@@ -90,6 +110,16 @@ class App extends React.Component {
     }
   }
 
+  deleteBlog = async (blog) => {
+    console.log(blog)
+    if(window.confirm(`delete '${blog.title}' by ${blog.author}?`)) {
+      const deleted = await blogService.remove(blog._id)
+      console.log(deleted)
+      const updateBlogs = this.state.blogs.filter(b => b._id !== blog._id)
+      this.setState({blogs: updateBlogs})
+    }
+  }
+
 
 
   handleLoginFieldChange = (event) => {
@@ -97,17 +127,19 @@ class App extends React.Component {
   }
 
   render() {
-
+    
     if (this.state.user === null) {
       return (
-        <LoginForm 
-          handleLoginFieldChange={this.handleLoginFieldChange} 
-          username={this.state.username}
-          password={this.state.password}
-          error={this.state.error}
-          success={this.state.success}
-          login={this.login}
-        />
+        <Togglable buttonLabel='login'>
+          <LoginForm 
+            handleLoginFieldChange={this.handleLoginFieldChange} 
+            username={this.state.username}
+            password={this.state.password}
+            error={this.state.error}
+            success={this.state.success}
+            login={this.login}
+          />
+        </Togglable>
       )
     }
   
@@ -116,8 +148,19 @@ class App extends React.Component {
         <h2>Blogs</h2>
         <Notification message={this.state.error} success={this.state.success} />
         <UserInfo logout={this.logout} user={this.state.user} />
-        <BlogForm title={this.state.title} author={this.state.author} url={this.state.url} addBlog={this.addBlog} handleBlogChange={this.handleBlogChange} /><br />
-        {this.state.blogs.map(blog => <Blog key={blog._id} blog={blog} />)}
+        <Togglable buttonLabel="new blog">
+        <BlogForm 
+          title={this.state.title} 
+          author={this.state.author} 
+          url={this.state.url} 
+          addBlog={this.addBlog} 
+          handleBlogChange={this.handleBlogChange} />
+        </Togglable><br />
+          {this.state.blogs.sort((yks, kaks) => yks.likes < kaks.likes).map(blog => 
+          <TogglableBlog key={blog._id+blog.likes} buttonLabel={blog.title + ' ' + blog.author}>
+            <Blog key={blog._id} blog={blog} deleteBlog={this.deleteBlog.bind(blog)} />
+          </TogglableBlog>
+          )}
       </div>
     )
   }
