@@ -31,7 +31,7 @@ render() {
   //console.log(user)
   return(
     
-    <div className="blogChild">
+    <div className="wrapper">
       {blog.url}<br />
       {this.state.likes} likes <button onClick={e => this.likeBlog({blog})}>like</button><br />
       Added by {blog.author}<br />
