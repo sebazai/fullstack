@@ -26,12 +26,12 @@ class TogglableBlog extends React.Component {
     }
   
       return (
-        <div style={blogStyle}>
+        <div style={blogStyle} className="togglableBlogTitle">
           <div style={hideWhenVisible}>
-            <div onClick={this.toggleVisibility}>{this.props.buttonLabel}</div>
+            <div className="clickable" onClick={this.toggleVisibility}>{this.props.buttonLabel}</div>
           </div>
           <div style={showWhenVisible}>
-            <div onClick={this.toggleVisibility}>{this.props.buttonLabel}</div>
+            <div className="clickable" onClick={this.toggleVisibility}>{this.props.buttonLabel}</div>
             {this.props.children}
           </div>
         </div>
