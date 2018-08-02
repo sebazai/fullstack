@@ -54,6 +54,6 @@ describe.only('<Note />', () => {
       </Togglable>
     )
   
-    //console.log(togglableComponent.debug())
+    console.log(togglableComponent.html())
   })
 })
