@@ -33,7 +33,7 @@ describe('unicafe reducer', () => {
     })
   })
 
-  it('send state zero and expect all to be 0', () => {
+  it('send action zero and expect all to be 0', () => {
       const testState = {
           good: 4,
           ok: 6,
@@ -44,7 +44,7 @@ describe('unicafe reducer', () => {
       }
       const state = testState
       deepFreeze(state)
-      expect(state).toEqual(testState)
+      expect(state.good).toEqual(4)
       const zeroState = counterReducer(state, action)
       expect(zeroState).toEqual({
           good: 0,
