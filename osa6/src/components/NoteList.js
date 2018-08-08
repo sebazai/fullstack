@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import actionFor from '../actionCreators'
+import { importanceToggling } from './../reducers/noteReducer'
 import Note from './Note'
 
 class NoteList extends React.Component {
@@ -14,22 +14,24 @@ class NoteList extends React.Component {
   componentWillUnmount() {
     this.unsubscribe()
   }
-    
-  toggleImportance = (id) => (e) => {
+
+  toggleImportance = (id) => () => {
     this.props.store.dispatch(
-      actionFor.importanceToggling(id)
+      importanceToggling(id)
     )
   }
   render() {
     const notesToShow = () => {
-      const {notes,filter} = this.context.store.getState()
+      const { notes, filter } = this.context.store.getState()
       if (filter === 'ALL') {
         return notes
       }
+
       return filter === 'IMPORTANT'
-      ? notes.filter(note => note.important)
-      : notes.filter(note => !note.important)
+        ? notes.filter(note => note.important)
+        : notes.filter(note => !note.important)
     }
+
     return (
       <ul>
         {notesToShow().map(note =>

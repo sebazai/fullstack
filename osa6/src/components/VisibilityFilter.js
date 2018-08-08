@@ -14,8 +14,9 @@ class VisibilityFilter extends React.Component {
     this.unsubscribe()
   }
 
-  filterClicked = (value) => () => {
+  filterClicked = (value) => (e) => {
     this.context.store.dispatch(filterChange(value))
+    //console.log(this.context.store.getState())
   }
 
   render() {
