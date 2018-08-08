@@ -1,6 +1,6 @@
 import React from 'react'
-import {createAnecdote} from '../reducers/anecdoteReducer'
-import {addNotification, removeNotification} from '../reducers/notificationReducer'
+import { createAnecdote } from '../reducers/anecdoteReducer'
+import { addNotification, removeNotification } from '../reducers/notificationReducer'
 
 class AnecdoteForm extends React.Component {
   handleSubmit = (e) => {
@@ -14,20 +14,20 @@ class AnecdoteForm extends React.Component {
     this.props.store.dispatch(addNotification(add))
     setTimeout(() => {
       this.props.store.dispatch(removeNotification())
-      }, 5000)
-    }
+    }, 5000)
+  }
 
-   render() {
-     return (
-       <div>
-      <h2>create new</h2>
+  render() {
+    return (
+      <div>
+        <h2>create new</h2>
         <form onSubmit={this.handleSubmit}>
           <div><input name='anecdote'/></div>
-          <button>create</button> 
+          <button>create</button>
         </form>
       </div>
-     )
-   }
+    )
+  }
 }
 
 export default AnecdoteForm

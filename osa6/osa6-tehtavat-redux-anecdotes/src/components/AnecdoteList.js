@@ -1,6 +1,6 @@
 import React from 'react'
-import {voteAnecdote} from '../reducers/anecdoteReducer'
-import {addNotification, removeNotification} from '../reducers/notificationReducer'
+import { voteAnecdote } from '../reducers/anecdoteReducer'
+import { addNotification, removeNotification } from '../reducers/notificationReducer'
 import Filter from './Filter'
 
 
@@ -16,8 +16,8 @@ class AnecdoteList extends React.Component {
     this.props.store.dispatch(addNotification(`you voted '${anecdoteContent}'`))
     setTimeout(() => {
       this.props.store.dispatch(removeNotification())
-      }, 5000)
-    }
+    }, 5000)
+  }
   render() {
 
     const anecdotesToShow = () => {
