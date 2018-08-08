@@ -1,13 +1,10 @@
-const initalState = [
-  { content: 'reduxin storen toiminnan määrittelee reduceri', important: true, id: 1 },
-  { content: 'storen tilassa voi olla mielivaltaista dataa', important: false, id: 2 }
-]
-
-const noteReducer = (state = initalState, action) => {
+const noteReducer = (state = [], action) => {
   console.log('ACTION: ', action)
   switch (action.type) {
   case 'NEW_NOTE':
     return [...state, action.data]
+  case 'INIT_NOTES':
+    return action.data
   case 'TOGGLE_IMPORTANCE': {
     const id = action.data.id
     const noteToChange = state.find(n => n.id === id)
@@ -21,14 +18,17 @@ const noteReducer = (state = initalState, action) => {
 
 const generateId = () => Number((Math.random() * 1000000).toFixed(0))
 
-export const noteCreation = (content) => {
+export const noteCreation = (data) => {
   return {
     type: 'NEW_NOTE',
-    data: {
-      content,
-      important: false,
-      id: generateId()
-    }
+    data
+  }
+}
+
+export const noteInitialization = (data) => {
+  return {
+    type: 'INIT_NOTES',
+    data
   }
 }
 
