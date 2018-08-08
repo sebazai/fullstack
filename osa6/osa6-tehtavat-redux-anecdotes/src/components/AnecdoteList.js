@@ -3,19 +3,20 @@ import { voteAnecdote } from '../reducers/anecdoteReducer'
 import { addNotification, removeNotification } from '../reducers/notificationReducer'
 import Filter from './Filter'
 import { connect } from 'react-redux'
+import anecdoteService from '../services/anecdotes'
 
 
 class AnecdoteList extends React.Component {
-  handleVote = (anecdote) => {
-    console.log(anecdote.target.value)
-    //console.log(anecdote.target)
+  handleVote = async (anecdote) => {
+    const id = anecdote.target.value
     //console.log(anecdote.target.value)
-    this.props.voteAnecdote(anecdote.target.value)
-    const allVisibleAnecdotes = this.props.anecdotesToShow
-    //console.log(allAnecdotes)
-    const votedAnecdote = allVisibleAnecdotes.filter(a => a.id === anecdote.target.value)
-    console.log(votedAnecdote)
-    this.props.addNotification(`you voted '${votedAnecdote[0].content}'`)
+    const anecdoteToChangeVote = this.props.anecdotesToShow.find(a => a.id === id)
+    const changedAnecdote = { ...anecdoteToChangeVote, votes: anecdoteToChangeVote.votes+1 }
+    const updated = await anecdoteService.update(id, changedAnecdote)
+    //console.log('CHANGED ', changedAnecdote)
+    //console.log('UPDATED', updated)
+    this.props.voteAnecdote(updated)
+    this.props.addNotification(`you voted '${updated.content}'`)
     setTimeout(() => {
       this.props.removeNotification()
     }, 5000)
