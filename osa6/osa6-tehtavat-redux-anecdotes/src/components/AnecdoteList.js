@@ -2,35 +2,30 @@ import React from 'react'
 import { voteAnecdote } from '../reducers/anecdoteReducer'
 import { addNotification, removeNotification } from '../reducers/notificationReducer'
 import Filter from './Filter'
+import { connect } from 'react-redux'
 
 
 class AnecdoteList extends React.Component {
   handleVote = (anecdote) => {
-    //console.log(this)
+    console.log(anecdote.target.value)
     //console.log(anecdote.target)
     //console.log(anecdote.target.value)
-    this.props.store.dispatch(voteAnecdote(anecdote.target.value))
-    const anecdoteFirst = this.props.store.getState().anecdotes
-    console.log(anecdoteFirst[0])
-    const anecdoteContent = anecdoteFirst[0].content
-    this.props.store.dispatch(addNotification(`you voted '${anecdoteContent}'`))
+    this.props.voteAnecdote(anecdote.target.value)
+    const allVisibleAnecdotes = this.props.anecdotesToShow
+    //console.log(allAnecdotes)
+    const votedAnecdote = allVisibleAnecdotes.filter(a => a.id === anecdote.target.value)
+    console.log(votedAnecdote)
+    this.props.addNotification(`you voted '${votedAnecdote[0].content}'`)
     setTimeout(() => {
-      this.props.store.dispatch(removeNotification())
+      this.props.removeNotification()
     }, 5000)
   }
   render() {
-
-    const anecdotesToShow = () => {
-      const { anecdotes, filter } = this.props.store.getState()
-      //console.log(filter)
-      //console.log(anecdotes)
-      return anecdotes.filter(anecdote => anecdote.content.toLowerCase().includes(filter))
-    }
     return (
       <div>
         <h2>Anecdotes</h2>
-        <Filter store={this.props.store} />
-        {anecdotesToShow().sort((a, b) => b.votes - a.votes).map(anecdote =>
+        <Filter />
+        {this.props.anecdotesToShow.sort((a, b) => b.votes - a.votes).map(anecdote =>
           <div key={anecdote.id}>
             <div>
               {anecdote.content}
@@ -48,4 +43,20 @@ class AnecdoteList extends React.Component {
   }
 }
 
-export default AnecdoteList
+
+const anecdotesToShow = (anecdotes,filter) => {
+  //console.log(filter)
+  //console.log(anecdotes)
+  return anecdotes.filter(anecdote => anecdote.content.toLowerCase().includes(filter))
+}
+
+const mapStateToProps = (state) => {
+  return {
+    anecdotesToShow: anecdotesToShow(state.anecdotes, state.filter)
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  { voteAnecdote, addNotification, removeNotification }
+)(AnecdoteList)
