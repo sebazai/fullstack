@@ -1,9 +1,8 @@
 import React from 'react'
 import { voteAnecdote } from '../reducers/anecdoteReducer'
-import { addNotification, removeNotification } from '../reducers/notificationReducer'
+import { addNotification } from '../reducers/notificationReducer'
 import Filter from './Filter'
 import { connect } from 'react-redux'
-import anecdoteService from '../services/anecdotes'
 
 
 class AnecdoteList extends React.Component {
@@ -12,14 +11,10 @@ class AnecdoteList extends React.Component {
     //console.log(anecdote.target.value)
     const anecdoteToChangeVote = this.props.anecdotesToShow.find(a => a.id === id)
     const changedAnecdote = { ...anecdoteToChangeVote, votes: anecdoteToChangeVote.votes+1 }
-    const updated = await anecdoteService.update(id, changedAnecdote)
     //console.log('CHANGED ', changedAnecdote)
     //console.log('UPDATED', updated)
-    this.props.voteAnecdote(updated)
-    this.props.addNotification(`you voted '${updated.content}'`)
-    setTimeout(() => {
-      this.props.removeNotification()
-    }, 5000)
+    this.props.voteAnecdote(changedAnecdote)
+    this.props.addNotification(`you voted '${changedAnecdote.content}'`, 5)
   }
   render() {
     return (
@@ -59,5 +54,5 @@ const mapStateToProps = (state) => {
 
 export default connect(
   mapStateToProps,
-  { voteAnecdote, addNotification, removeNotification }
+  { voteAnecdote, addNotification }
 )(AnecdoteList)

@@ -1,7 +1,16 @@
-export const addNotification = (text) => {
-  return {
-    type: 'SET_NOTIFICATION',
-    text
+export const addNotification = (text, time) => {
+  return async (dispatch) => {
+    //console.log(`aika`, time)
+    dispatch({
+      type: 'SET_NOTIFICATION',
+      text: text
+    })
+    setTimeout(() => {
+      dispatch({
+        type: 'SET_NOTIFICATION',
+        text: ''
+      })
+    }, `${time}000`)
   }
 }
 
