@@ -3,26 +3,24 @@ import NoteForm from './components/NoteForm.js'
 import NoteList from './components/NoteList.js'
 import VisibilityFilter from './components/VisibilityFilter'
 import { connect } from 'react-redux'
-import { noteInitialization } from './reducers/noteReducer'
-import noteService from './services/notes'
+import { initializeNotes } from './reducers/noteReducer'
 
 class App extends React.Component {
-  componentDidMount = async () => {
-    const notes = await noteService.getAll()
-    this.props.noteInitialization(notes)
+  componentDidMount () {
+    this.props.initializeNotes()
   }
+
   render() {
     return (
       <div>
         <NoteForm />
-        <VisibilityFilter />
         <NoteList />
+        <VisibilityFilter />
       </div>
     )
   }
 }
 
 export default connect(
-  null,
-  {noteInitialization}
+  null, { initializeNotes }
 )(App)
