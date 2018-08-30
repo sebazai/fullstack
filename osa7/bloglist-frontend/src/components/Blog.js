@@ -1,39 +1,42 @@
 import React from 'react'
+/*import blogService from '../services/blogs'*/
 
 class Blog extends React.Component {
-  constructor() {
+  /*constructor(props) {
     super()
     this.state = {
-      visible: false
+      comment: '',
+      blogId: props.blog._id
     }
   }
+  comment = () => async () => {
+    const makeComment = {
+      "comment": `${this.state.comment}`
+    }
+    const response = await blogService.comment(this.state.blogId, makeComment)
+    console.log(response)
+    /*this.notify(`you liked '${updated.title}' by ${updated.author}`)
+    this.setState({
+      blogs: this.state.blogs.map(b => b._id === id ? updated : b)
+    })
+  }
+
+  handleChange = (event) => {
+    this.setState({ [event.target.name]: event.target.value })
+    console.log(this.state.comment)
+    console.log(this.state.blogId)
+  }
+  */
   render() {
+    console.log(this.props)
     const { blog, like, deletable, remove } = this.props
-
-    const blogStyle = {
-      paddingTop: 10,
-      paddingLeft: 2,
-      border: 'solid',
-      borderWidth: 1,
-      marginBottom: 5
-    }
-
-    const contentStyle = {
-      display: this.state.visible? '' : 'none',
-      margin: 5,
-    }
 
     const adder = blog.user ? blog.user.name : 'anonymous'
 
     return (
-      <div style={blogStyle}>
-        <div 
-          onClick={() => this.setState({ visible: !this.state.visible })} 
-          className='name'
-        >
-          {blog.title} {blog.author}
-        </div>
-        <div style={contentStyle} className='content'>
+      <div>
+        <h1>{blog.title} {blog.author}</h1>
+        <div>
           <div>
             <a href={blog.url}>{blog.url}</a>
           </div>
@@ -45,7 +48,22 @@ class Blog extends React.Component {
           </div>
           {deletable && <div><button onClick={remove}>delete</button></div>}
         </div>
-      </div>  
+        <div>
+          <h3>comments</h3>
+          <ul>
+            {blog.comments.map(c => <li key={c}>{c}</li>)}
+          </ul>
+        </div>
+        {/*<div>
+          <form onSubmit={this.comment}>
+          <input
+            type="text"
+            value={this.state.comment}
+            name="comment"
+            onChange={this.handleChange}></input><button type="submit">add comment</button>
+          </form>
+        </div>*/}
+      </div>
     )
   }
 }

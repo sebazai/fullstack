@@ -26,5 +26,5 @@ describe.only('<SimpleBlog />', () => {
     button.simulate('click')
 
     expect(onClick.mock.calls.length).toBe(2)
-  })  
+  })
 })

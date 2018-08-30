@@ -28,5 +28,5 @@ describe.only('<Blog />', () => {
 
     const contentDiv = blogComponent.find('.content')
     expect(contentDiv.getElement().props.style.display).toEqual('')
-  })  
+  })
 })

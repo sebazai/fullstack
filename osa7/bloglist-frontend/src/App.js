@@ -1,5 +1,6 @@
 import React from 'react'
 import Blog from './components/Blog'
+import BlogLink from './components/BlogLink'
 import BlogForm from './components/BlogForm'
 import Users from './components/Users'
 import User from './components/User'
@@ -8,7 +9,7 @@ import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import usersService from './services/users'
-import { BrowserRouter as Router, Route, NavLink, Link, Redirect } from 'react-router-dom'
+import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom'
 
 class App extends React.Component {
   constructor(props) {
@@ -17,7 +18,7 @@ class App extends React.Component {
       blogs: [],
       user: null,
       username: '',
-      password: '', 
+      password: '',
       title: '',
       author: '',
       url: '',
@@ -32,7 +33,7 @@ class App extends React.Component {
     )
 
     usersService.getAll().then(users =>
-      this.setState( {users})
+      this.setState( { users })
     )
 
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
@@ -41,7 +42,7 @@ class App extends React.Component {
       this.setState({ user })
       blogService.setToken(user.token)
     }
-  } 
+  }
 
   notify = (message, type = 'info') => {
     this.setState({
@@ -52,12 +53,12 @@ class App extends React.Component {
     setTimeout(() => {
       this.setState({
         notification: null
-      })     
+      })
     }, 10000)
   }
 
   like = (id) => async () => {
-    const liked = this.state.blogs.find(b=>b._id===id)
+    const liked = this.state.blogs.find(b => b._id===id)
     const updated = { ...liked, likes: liked.likes + 1 }
     await blogService.update(id, updated)
     this.notify(`you liked '${updated.title}' by ${updated.author}`)
@@ -76,7 +77,7 @@ class App extends React.Component {
     await blogService.remove(id)
     this.notify(`blog '${deleted.title}' by ${deleted.author} removed`)
     this.setState({
-      blogs: this.state.blogs.filter(b=>b._id!==id)
+      blogs: this.state.blogs.filter(b => b._id!==id)
     })
   }
 
@@ -87,12 +88,12 @@ class App extends React.Component {
       author: this.state.author,
       url: this.state.url,
     }
-    
+
     const result = await blogService.create(blog)
     this.notify(`blog '${blog.title}' by ${blog.author} added`)
-    this.setState({ 
-      title: '', 
-      url: '', 
+    this.setState({
+      title: '',
+      url: '',
       author: '',
       blogs: this.state.blogs.concat(result)
     })
@@ -158,6 +159,25 @@ class App extends React.Component {
         </div>
       )
     }
+    const Menu = ({ loggedUser }) => {
+      const activeStyle = {
+        fontWeight: 'bold',
+        color: 'green',
+      }
+
+      const menuStyle = {
+        background: 'blue',
+        paddingBottom: '30px',
+        paddingTop: '10px'
+      }
+      return (
+        <div className={menuStyle}>
+          <NavLink exact to="/" activeStyle={activeStyle}>blogs</NavLink> &nbsp;
+          <NavLink exact to="/users" activeStyle={activeStyle}>users</NavLink> &nbsp;
+          {loggedUser} logged in <button onClick={this.logout}>logout</button>
+        </div>
+      )
+    }
 
     const byLikes = (b1, b2) => b2.likes - b1.likes
 
@@ -169,9 +189,10 @@ class App extends React.Component {
           <h1>blog app</h1>
           <Notification notification={this.state.notification} />
 
-          {this.state.user.name} logged in <button onClick={this.logout}>logout</button>
+          <Menu loggedUser={this.state.user.name} />
+
           <Togglable buttonLabel='uusi blogi'>
-            <BlogForm 
+            <BlogForm
               handleChange={this.handleLoginChange}
               title={this.state.title}
               author={this.state.author}
@@ -180,24 +201,28 @@ class App extends React.Component {
             />
           </Togglable>
           <Route exact path="/users" render={() => <Users key='allUsers' users={this.state.users} />} />
-          <Route exact path="/users/:id" render={({match}) => <User user={this.state.users.find(u => u._id === match.params.id)} /> } />
+          <Route exact path="/users/:id" render={({ match }) => <User user={this.state.users.find(u => u._id === match.params.id)} /> } />
           <Route exact path="/" render={() =>
-          <div>
-            <h2>blogs</h2>
-            {blogsInOrder.map(blog => 
-              <Blog 
-                key={blog._id} 
-                blog={blog} 
-                like={this.like(blog._id)}
-                remove={this.remove(blog._id)}
-                deletable={blog.user === undefined || blog.user.username === this.state.user.username}
-              />
-            )}
-          </div>} />
+            <div>
+              <h2>blogs</h2>
+              {blogsInOrder.map(blog =>
+                <BlogLink key={blog._id} blog={blog} />
+              )}
+
+            </div>} />
+          <Route exact path="/blogs/:id" render={({ match }) =>
+            <Blog
+              key={match.params.id}
+              blog={this.state.blogs.find(blog => blog._id === match.params.id)}
+              like={this.like(match.params.id)}
+              remove={this.remove(match.params.id)}
+              deletable={this.state.blogs.find(blog => blog._id === match.params.id).user === undefined || this.state.blogs.find(blog => blog._id === match.params.id).user.username === this.state.user.username} /> } />
         </div>
       </Router>
     )
   }
 }
 
-export default App;
+/**/
+
+export default App
