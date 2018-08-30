@@ -1,0 +1,20 @@
+{
+  "name": "webpack-osa7",
+  "version": "0.0.1",
+  "description": "practising webpack",
+  "scripts": {
+    "build": "webpack --mode=development"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.0",
+    "babel-preset-react": "^6.24.1",
+    "webpack": "^4.17.1",
+    "webpack-cli": "^3.1.0"
+  },
+  "dependencies": {
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2"
+  }
+}
