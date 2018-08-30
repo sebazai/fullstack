@@ -1,10 +1,14 @@
 import React from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
+import Users from './components/Users'
+import User from './components/User'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import usersService from './services/users'
+import { BrowserRouter as Router, Route, NavLink, Link, Redirect } from 'react-router-dom'
 
 class App extends React.Component {
   constructor(props) {
@@ -17,7 +21,8 @@ class App extends React.Component {
       title: '',
       author: '',
       url: '',
-      notification: null
+      notification: null,
+      users: []
     }
   }
 
@@ -25,6 +30,11 @@ class App extends React.Component {
     blogService.getAll().then(blogs =>
       this.setState({ blogs })
     )
+
+    usersService.getAll().then(users =>
+      this.setState( {users})
+    )
+
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
@@ -79,7 +89,7 @@ class App extends React.Component {
     }
     
     const result = await blogService.create(blog)
-    this.notify(`blog  ${blog.title}  by  ${blog.author}  added`)
+    this.notify(`blog '${blog.title}' by ${blog.author} added`)
     this.setState({ 
       title: '', 
       url: '', 
@@ -154,33 +164,39 @@ class App extends React.Component {
     const blogsInOrder = this.state.blogs.sort(byLikes)
 
     return (
-      <div>
-        <Notification notification={this.state.notification} />
+      <Router>
+        <div>
+          <h1>blog app</h1>
+          <Notification notification={this.state.notification} />
 
-        {this.state.user.name} logged in <button onClick={this.logout}>logout</button>
-
-        <Togglable buttonLabel='uusi blogi'>
-          <BlogForm 
-            handleChange={this.handleLoginChange}
-            title={this.state.title}
-            author={this.state.author}
-            url={this.state.url}
-            handleSubmit={this.addBlog}
-          />
-        </Togglable>
-
-        <h2>blogs</h2>
-        {blogsInOrder.map(blog => 
-          <Blog 
-            key={blog._id} 
-            blog={blog} 
-            like={this.like(blog._id)}
-            remove={this.remove(blog._id)}
-            deletable={blog.user === undefined || blog.user.username === this.state.user.username}
-          />
-        )}
-      </div>
-    );
+          {this.state.user.name} logged in <button onClick={this.logout}>logout</button>
+          <Togglable buttonLabel='uusi blogi'>
+            <BlogForm 
+              handleChange={this.handleLoginChange}
+              title={this.state.title}
+              author={this.state.author}
+              url={this.state.url}
+              handleSubmit={this.addBlog}
+            />
+          </Togglable>
+          <Route exact path="/users" render={() => <Users key='allUsers' users={this.state.users} />} />
+          <Route exact path="/users/:id" render={({match}) => <User user={this.state.users.find(u => u._id === match.params.id)} /> } />
+          <Route exact path="/" render={() =>
+          <div>
+            <h2>blogs</h2>
+            {blogsInOrder.map(blog => 
+              <Blog 
+                key={blog._id} 
+                blog={blog} 
+                like={this.like(blog._id)}
+                remove={this.remove(blog._id)}
+                deletable={blog.user === undefined || blog.user.username === this.state.user.username}
+              />
+            )}
+          </div>} />
+        </div>
+      </Router>
+    )
   }
 }
 
